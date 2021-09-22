@@ -2,40 +2,42 @@
 {
     public interface IHuman
     {
-        public void Walk();
+        public string Walk();
     }
 
     public interface IDriver
     {
-        public void Drive();
+        public string Drive();
     }
 
     public class Student : IHuman
     {
-        public void Walk()
+        public string Walk()
         {
+            return "Student";
         }
     }
     
     public class TaxiDriver : IDriver
     {
-        public void Drive()
+        public string Drive()
         {
+            return "Driver";
         }
     }
 
-    public class Wrapper : IDriver
+    public class Adapter : IDriver
     {
         private Student _student;
 
-        public Wrapper(Student student)
+        public Adapter(Student student)
         {
             _student = student;
         }
 
-        public void Drive()
+        public string Drive()
         {
-            _student.Walk();
+            return _student.Walk();
         }
     }
 }

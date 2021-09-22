@@ -1,36 +1,76 @@
-﻿
-using System;
+﻿using System.Collections.Generic;
 
 namespace GoF_Patterns.Behaviour_Patterns
 {
     public class ElevatorState
     {
-        public int State { get; private set; }
+        public int Floor { get; private set; }
 
-        public ElevatorState(int state)
+        public ElevatorState(int floor)
         {
-            State = state;
+            Floor = floor;
+        }
+
+        #nullable enable
+        public override bool Equals(object? obj)
+        {
+            if (obj == null || !(obj is ElevatorState second))
+            {
+                return false;
+            }
+
+            return this.Floor == second.Floor;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 
-    public class Originator
+    public class Passenger
     {
-        private int _state = 1;
+        private int _floor = 1;
 
-        public void ChangeState()
+        public void GoUp()
         {
-            Console.WriteLine("Changed state from {0} to {1}",_state,++_state);
+            ++_floor;
         }
 
-        public ElevatorState SaveState()
+        public void GoDown()
         {
-            Console.WriteLine("Saved state {0}",_state);
-            return new ElevatorState(_state);
+           _floor = _floor > 0 ? --_floor:_floor;
+        }
+
+        public ElevatorState GetState()
+        {
+            return new ElevatorState(_floor);
+        }
+
+        public string RestoreState(ElevatorState elevatorState)
+        {
+            _floor = elevatorState.Floor;
+            return $"Restored state with floor {_floor}";
         }
     }
 
-    public class Caretaker
+    public class Dispatcher
     {
+        private readonly Stack<ElevatorState> History;
+
+        public Dispatcher()
+        {
+            History = new Stack<ElevatorState>();
+        }
+
+        public void SaveState(ElevatorState state)
+        {
+            History.Push(state);
+        }
         
+        public ElevatorState GetPreviousState()
+        {
+            return History.Pop();
+        }
     }
 }
